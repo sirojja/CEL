@@ -1,0 +1,3 @@
+capable способный
+implicitly неявно
+parentheses скобки

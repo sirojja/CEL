@@ -1,0 +1,106 @@
+#! /usr/bin/python3
+import os
+import random
+import sys
+
+
+home = os.getenv("HOME")
+PATH_TO_DICT = home + '/CEL/dict/'
+
+
+def print_word(word):
+    n = len(word)
+    up = n + 4
+    low = up
+    up_str = '='*up
+    midle_str = '= ' + word + ' ='
+    low_str = '='*low
+    print(up_str)
+    print(midle_str)
+    print(low_str)
+
+def choose_topic():
+    print("Choose the dictionary you need:")
+    cmd = 'ls ' + PATH_TO_DICT
+    os.system(cmd)
+    dict = str(input())
+    dict_with_path = PATH_TO_DICT + dict
+    if (os.path.isfile(dict_with_path)):
+        return dict
+    else:
+        return "none"
+
+def get_wordlist(dict):
+    with open(dict) as f:
+        wordlist = f.readlines()
+    wordlist = [x.strip() for x in wordlist]
+    return wordlist
+
+def simple_mode():
+    dict = choose_topic()
+    link = PATH_TO_DICT + dict
+    words = get_wordlist(link) 
+    random.shuffle(words)
+    for word in words:
+        pair = word.split()
+        eng = pair[0]
+        rus = pair[1]
+        print_word(rus)
+        s = input()
+        print_word(eng)
+        s = input()
+        os.system('clear')
+
+def add_new_word():
+    from deep_translator import GoogleTranslator
+    print('Which dictionary do you want to add the word to? You can also create a new dictionary.')
+    cmd = 'ls ' + PATH_TO_DICT
+    os.system(cmd)
+    print('New')
+    cmd = str(input())
+    file = ''
+    if (cmd == 'New'):
+        name = str(input('Enter the name of the dictionary: '))
+        name = PATH_TO_DICT + name
+        k = 'touch '+ name
+        k = k.replace(';', '')
+        k = k.replace('&', '')
+        os.system(k)
+        file = name
+    elif (os.path.isfile(PATH_TO_DICT+cmd)):
+        file = PATH_TO_DICT + cmd
+    else:
+        print("Choose correct command")
+        return
+    eng = str(input("Enter English word: "))
+    rus = GoogleTranslator(source='auto', target='ru').translate(eng)
+    print_word(rus)
+    sub = str(input('Save word and translation?(y/n): '))
+    if(sub == 'y'):
+        line = eng + ' ' + rus + '\n'
+        with open(file, 'a') as file: file.writelines(line) 
+    
+def help():
+    print('Use:')
+    print('CEL [options]')
+    print('-a, --add    - add a new word')
+    print('-s, --start  - start repeating words')
+
+
+if __name__ == '__main__':
+    if(len(sys.argv) > 1):
+        if(sys.argv[1] == '--add' or sys.argv[1] == '-a'):
+            add_new_word()
+        elif(sys.argv[1] == '--start' or sys.argv[1] == '-s'):
+            simple_mode()
+        else:
+            help()
+    else:
+        help()
+
+    
+
+
+
+
+
