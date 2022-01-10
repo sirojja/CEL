@@ -1,3 +1,5 @@
-capable способный
-implicitly неявно
-parentheses скобки
+capable@способный
+implicitly@неявно
+parentheses@скобки
+preserve@сохранять
+crucial@ключевой
