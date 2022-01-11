@@ -6,7 +6,42 @@ import sys
 
 home = os.getenv("HOME")
 PATH_TO_DICT = home + '/CEL/dict/'
+PATH_TO_CONFIG = home + '/CEL/conf/conf.txt'
 
+def get_dict():
+    with open(PATH_TO_CONFIG) as f:
+        confs = f.readlines()
+    confs = [x.strip() for x in confs]
+    dictname = confs[0].split()
+    return dictname[1]
+
+def config():
+    dict = get_dict()
+    print('Now you use', dict)
+    print('You can change the dictionary or create a new one. Write a name of the dictionary or New')
+    cmd = 'ls ' + PATH_TO_DICT
+    os.system(cmd)
+    print('New')
+    cmd = str(input())
+    file = ''
+    if (cmd == 'New'):
+        name = str(input('Enter the name of the dictionary: '))
+        tmp = name
+        name = PATH_TO_DICT + name
+        k = 'touch '+ name
+        k = k.replace(';', '')
+        k = k.replace('&', '')
+        os.system(k)
+        dict = tmp
+    elif (os.path.isfile(PATH_TO_DICT+cmd)):
+        dict = cmd
+    else:
+        print('Wrong name of the dictionary')
+        return
+    conf_dict = 'conf ' + dict
+    with open(PATH_TO_CONFIG, 'w') as file: file.writelines(conf_dict)
+    print('Dictionary changed successfully')
+    
 
 def print_word(word):
     n = len(word)
@@ -37,7 +72,7 @@ def get_wordlist(dict):
     return wordlist
 
 def simple_mode():
-    dict = choose_topic()
+    dict = get_dict()
     link = PATH_TO_DICT + dict
     words = get_wordlist(link) 
     random.shuffle(words)
@@ -53,25 +88,9 @@ def simple_mode():
 
 def add_new_word():
     from deep_translator import GoogleTranslator
-    print('Which dictionary do you want to add the word to? You can also create a new dictionary.')
-    cmd = 'ls ' + PATH_TO_DICT
-    os.system(cmd)
-    print('New')
-    cmd = str(input())
-    file = ''
-    if (cmd == 'New'):
-        name = str(input('Enter the name of the dictionary: '))
-        name = PATH_TO_DICT + name
-        k = 'touch '+ name
-        k = k.replace(';', '')
-        k = k.replace('&', '')
-        os.system(k)
-        file = name
-    elif (os.path.isfile(PATH_TO_DICT+cmd)):
-        file = PATH_TO_DICT + cmd
-    else:
-        print("Choose correct command")
-        return
+    dict = get_dict()
+    file = PATH_TO_DICT + dict
+    print('Now you use:', dict)
     eng = str(input("Enter English word: "))
     rus = GoogleTranslator(source='auto', target='ru').translate(eng)
     print_word(rus)
@@ -85,6 +104,7 @@ def help():
     print('CEL [options]')
     print('-a, --add    - add a new word')
     print('-s, --start  - start repeating words')
+    print('--conf       - change the dictionary')
 
 
 if __name__ == '__main__':
@@ -93,13 +113,14 @@ if __name__ == '__main__':
             add_new_word()
         elif(sys.argv[1] == '--start' or sys.argv[1] == '-s'):
             simple_mode()
+        elif(sys.argv[1] == '--conf'):
+            config()
         else:
             help()
     else:
         help()
 
     
-
 
 
 
