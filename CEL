@@ -4,9 +4,8 @@ import random
 import sys
 
 
-home = os.getenv("HOME")
-PATH_TO_DICT = home + '/CEL/dict/'
-PATH_TO_CONFIG = home + '/CEL/conf/conf.txt'
+PATH_TO_DICT = './dict/'
+PATH_TO_CONFIG = './conf/conf.txt'
 
 def get_dict():
     with open(PATH_TO_CONFIG) as f:
@@ -95,9 +94,10 @@ def add_new_word():
     rus = GoogleTranslator(source='auto', target='ru').translate(eng)
     print_word(rus)
     sub = str(input('Save word and translation?(y/n): '))
-    if(sub == 'y'):
+    if(sub == 'y' or sub == ''):
         line = eng + '@' + rus + '\n'
-        with open(file, 'a') as file: file.writelines(line) 
+        with open(file, 'a') as file: file.writelines(line)
+        print('The word has been added to the dictionary') 
     
 def help():
     print('Use:')
