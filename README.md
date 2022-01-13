@@ -3,7 +3,11 @@
 
 The program randomly takes words from the dictionary and offers to remember them.
 
-You can add new words to the dictionary, the program uses the google translator API.
+You can add new words to the dictionary, the program uses the google translator API. You need to install:
+
+```python
+pip3 install deep-translator
+```
 
 
 
